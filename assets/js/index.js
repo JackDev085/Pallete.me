@@ -1,11 +1,5 @@
 const color = document.querySelector(".color")
 
-function geraCorAleatoria() {
-  let h = Math.floor(Math.random() * 354); // gera um número aleatório entre 0 e 354
-  let s = 85
-  let l = 54
-  return `hsl(${h},${s}%,${l}%)`; // retorna a cor no formato HSL
-}
 addEventListener('click', e => {
   if (e.target.classList.contains('btn-gerar')) {
     mudaCor()
@@ -15,15 +9,45 @@ addEventListener('click', e => {
   }
 })
 function mudaCor() {
-  let elements = document.querySelectorAll('.color'); // substitua '.color' pelo seletor do seu elemento
-  let cor = geraCorAleatoria();
-  elements.forEach((element) => {
-    element.style.backgroundColor = cor;
+  let elements = document.querySelectorAll('.color');
+  let h = Math.random()*364; // valor inicial de h
+  let s = 90; 
+  let l =11; 
+
+  elements.forEach((element, index) => {
+    if (index < 5) {
+      h -= 3;
+    } else {
+      h += 3;
+    }
+    if(index != 0) {
+      l += 11;
+    }
+    if (l > 100 ) l = 100; // garante que o valor de l não ultrapasse 100
+
+    element.style.backgroundColor = `hsl(${h}, ${s}%, ${l}%)`;
   });
+
+  let backgrounds = []; // Inicializa como array vazio
+  let i = 0;
+  elements.forEach(element => {
+    let style = getComputedStyle(element);
+    let backgroundColor = style.backgroundColor;
+    backgrounds.push(backgroundColor); // Adiciona a cor ao array
+    i++;
+  });
+  aplicaBackground(backgrounds); // Passa o array para a função
+
+  
+}
+function aplicaBackground(cores) {
+  let root = document.documentElement; // obtém o elemento root
+  root.style.setProperty('--corBg', cores[0]); // substitua '--nome-da-variavel' pelo nome da sua variável CSS
+  root.style.setProperty('--corTxt', cores[8]); // substitua '--nome-da-variavel' pelo nome da sua variável CSS
 }
 
 function copiaCor() {
-  let elements = document.querySelectorAll('.color'); // substitua '.color' pelo seletor do seu elemento
+  let elements = document.querySelectorAll('.color');
   let backgrounds = []
   let i = 1
   elements.forEach(element => {
@@ -32,15 +56,11 @@ function copiaCor() {
     backgrounds += ` ${i} - ${backgroundColor}\n`
     i++
   })
-
   copiaParaTransferencia(backgrounds)
-  
 }
-
 function copiaParaTransferencia(text){
-
-  let textToCopy = text; // substitua por seu próprio texto
+  let textToCopy = text;
     navigator.clipboard.writeText(textToCopy).then(function () {
-    console.log('Copiado para a área de transferência com sucesso!');
+    alert("Copiado para área de trânsferência")
     })
 }
